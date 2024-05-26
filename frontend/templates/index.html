@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Shop</title>
+</head>
+<body>
+    <h1>Welcome to My Shop</h1>
+    <p>This is a simple representation of your shop web app.</p>
+
+    <!-- Dropdown menu for users to buy items -->
+    <h2>Choose a User to Buy an Item:</h2>
+    <form method="post" action="/buy">
+        <select name="userID">
+            {% for user in users %}
+                <option value="{{ user.userID }}">{{ user.userName }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Dropdown menu for items -->
+        <h2>Choose an Item:</h2>
+        <select name="id">
+            {% for item in items %}
+                <option value="{{ item.id }}">{{ item.name }} - {{ item.price }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Buy button -->
+        <button type="submit">Buy</button>
+    </form>
+
+    <!-- Button to get user's purchases -->
+    <h2>Get User's Purchases:</h2>
+    <form method="post" action="/get_purchases">
+        <select name="userID">
+            {% for user in users %}
+                <option value="{{ user.userID }}">{{ user.userName }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Get Purchases</button>
+    </form>
+
+    <!-- Display user's purchases -->
+    <h2>User's Purchases:</h2>
+    <ul>
+        {% for purchase in user_purchases %}
+            <li>{{ purchase.name }} - {{ purchase.price }}</li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>
