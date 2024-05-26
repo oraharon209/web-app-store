@@ -12,20 +12,41 @@ app = Flask(__name__)
 # Loading env vars into code
 load_dotenv()
 MONGO_IP = os.getenv('MONGO_IP')
+mongo_username = os.getenv('MONGO_USERNAME', 'default_username')
+mongo_password = os.getenv('MONGO_PASSWORD', 'default_password')
 KAFKA_IP = os.getenv('KAFKA_IP')
+kafka_password = os.getenv('KAFKA_PASSWORD')
+
 
 # Use the MongoDB instance running on port 27017
-mongo_client = MongoClient(f'mongodb://{MONGO_IP}:27017/')
-db = mongo_client['shop_db']
-collection_user = db['users']
-collection_items = db['items']
+try:
+    mongo_client = MongoClient(f'mongodb://{mongo_username}:{mongo_password}@{MONGO_IP}:27017/')
+    db = mongo_client['shop_db']
+    collection_user = db['users']
+    collection_items = db['items']
+    mongo_initialized = True
+except pymongo_errors.ConnectionFailure:
+    mongo_client = None
+    db = None
+    collection_user = None
+    collection_items = None
+    mongo_initialized = False
 
 # Kafka consumer configuration
 consumer = KafkaConsumer(
     'purchase_topic',
     bootstrap_servers=f'{KAFKA_IP}:9092',
+    security_protocol=security_protocol,
+    sasl_mechanism=sasl_mechanism,
+    sasl_plain_username=username,
+    sasl_plain_password=kafka_password,
     value_deserializer=lambda m: json.loads(m.decode('utf-8'))
 )
+
+# Set Kafka SASL authentication configurations
+sasl_mechanism = "SCRAM-SHA-256"
+security_protocol = "SASL_PLAINTEXT"
+username = "user1"
 
 
 def consume_messages():
