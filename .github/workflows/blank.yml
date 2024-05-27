@@ -1,0 +1,33 @@
+
+name: CD
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install YQ
+        uses: dcarbone/install-yq-action@v1.1.1
+
+      - name: Update Deployment Image Tag
+        run: |
+          yq -i '.spec.template.spec.containers[0].image = "oraharon/kube-jenkins-docker:53"' forecast.yml
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add forecast.yml
+          git commit -m "Update image tag to 53"
+          git push
