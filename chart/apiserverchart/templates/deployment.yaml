@@ -35,11 +35,11 @@ spec:
               key: mongodb-root-password
 
 
-        - name: KAFKA_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: my-release-kafka-user-passwords
-              key: client-passwords
+        # - name: KAFKA_PASSWORD
+          # valueFrom:
+            # secretKeyRef:
+              # name: my-release-kafka-user-passwords
+              # key: client-passwords
           
         image: {{ .Values.apiServer.apiServer.image.repository }}:{{ .Values.apiServer.apiServer.image.tag
           | default .Chart.AppVersion }}

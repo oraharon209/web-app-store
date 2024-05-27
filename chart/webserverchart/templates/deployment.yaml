@@ -25,11 +25,11 @@ spec:
           value: {{ quote .Values.clientWebServer.clientWebServer.env.kafkaIp }}
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
-        - name: KAFKA_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: my-release-kafka-user-passwords
-              key: client-passwords
+        # - name: KAFKA_PASSWORD
+          # valueFrom:
+            # secretKeyRef:
+              # name: my-release-kafka-user-passwords
+              # key: client-passwords
               
         image: {{ .Values.clientWebServer.clientWebServer.image.repository }}:{{ .Values.clientWebServer.clientWebServer.image.tag
           | default .Chart.AppVersion }}
