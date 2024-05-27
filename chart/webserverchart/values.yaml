@@ -10,7 +10,7 @@ clientWebServer:
 kubernetesClusterDomain: cluster.local
 service:
   ports:
-  - port: 80
-    protocol: TCP
-    targetPort: 8000
+    - port: 80
+      protocol: TCP
+      targetPort: 8000
   type: ClusterIP
