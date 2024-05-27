@@ -4,33 +4,34 @@ from kafka import KafkaConsumer
 import threading
 import json
 import os
-from dotenv import load_dotenv
 
 # Creating a Flask instance
 app = Flask(__name__)
 
 # Loading env vars into code
-load_dotenv()
 MONGO_IP = os.getenv('MONGO_IP')
-mongo_username = os.getenv('MONGO_USERNAME', 'default_username')
-mongo_password = os.getenv('MONGO_PASSWORD', 'default_password')
+MONGO_PORT = 27017
+mongo_username = os.getenv('MONGO_USERNAME')
+mongo_password = os.getenv('MONGO_PASSWORD')
 KAFKA_IP = os.getenv('KAFKA_IP')
 kafka_password = os.getenv('KAFKA_PASSWORD')
 
 
 # Use the MongoDB instance running on port 27017
-try:
-    mongo_client = MongoClient(f'mongodb://{mongo_username}:{mongo_password}@{MONGO_IP}:27017/')
-    db = mongo_client['shop_db']
-    collection_user = db['users']
-    collection_items = db['items']
-    mongo_initialized = True
-except pymongo_errors.ConnectionFailure:
-    mongo_client = None
-    db = None
-    collection_user = None
-    collection_items = None
-    mongo_initialized = False
+
+mongo_client = MongoClient(f'mongodb://{mongo_username}:{mongo_password}@{MONGO_IP}:{MONGO_PORT}/', 
+                           serverSelectionTimeoutMS=5000, 
+                           authSource='admin', 
+                           authMechanism='SCRAM-SHA-1')
+db = mongo_client['shop_db']
+collection_user = db['users']
+collection_items = db['items']
+
+
+# Set Kafka SASL authentication configurations
+sasl_mechanism = "PLAIN"
+security_protocol = "SASL_PLAINTEXT"
+username = "user1"
 
 # Kafka consumer configuration
 consumer = KafkaConsumer(
@@ -42,11 +43,6 @@ consumer = KafkaConsumer(
     sasl_plain_password=kafka_password,
     value_deserializer=lambda m: json.loads(m.decode('utf-8'))
 )
-
-# Set Kafka SASL authentication configurations
-sasl_mechanism = "SCRAM-SHA-256"
-security_protocol = "SASL_PLAINTEXT"
-username = "user1"
 
 
 def consume_messages():
@@ -102,8 +98,8 @@ def get_user_by_id():
         return jsonify([])
     return jsonify({'status': 'error', 'message': 'User not found'}), 404
 
+threading.Thread(target=consume_messages, daemon=True).start()
 
 if __name__ == '__main__':
     # Start Kafka consumer in a separate thread
-    threading.Thread(target=consume_messages, daemon=True).start()
     app.run(host='0.0.0.0', port=5000)

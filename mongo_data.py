@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 
 # Connect to MongoDB
-client = MongoClient('mongodb://localhost:27017/')
+client = MongoClient('mongodb://root:6DMoxqDLmJ@10.244.0.66:27017/')
 db = client['shop_db']
 
 # Insert Users

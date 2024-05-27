@@ -3,20 +3,18 @@ from kafka import KafkaProducer
 import requests
 import json
 import os
-from dotenv import load_dotenv
 
 # Creating a Flask instance
 app = Flask(__name__)
 
 # Loading env vars into code
-load_dotenv()
 KAFKA_IP = os.getenv('KAFKA_IP')
 API_SERVER_IP = os.getenv('API_SERVER_IP')
 API_SERVER_URL = f'http://{API_SERVER_IP}:5000'
 kafka_password = os.getenv('KAFKA_PASSWORD')
 
 # Set Kafka SASL authentication configurations
-sasl_mechanism = "SCRAM-SHA-256"
+sasl_mechanism = "PLAIN"
 security_protocol = "SASL_PLAINTEXT"
 username = "user1"
 

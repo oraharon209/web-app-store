@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: a9b0722e599fa48bb91f34a06fea9c87-403704980.eu-north-1.elb.amazonaws.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: client-web-server-service
+                port:
+                  number: 80
+          - path: /solitaire
+            pathType: Prefix
+            backend:
+              service:
+                name: solitaire-service
+                port:
+                  number: 9000

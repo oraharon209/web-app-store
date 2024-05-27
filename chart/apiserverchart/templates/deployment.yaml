@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "apiserverchart.fullname" . }}-api-server
+  labels:
+    app: api-server
+  {{- include "apiserverchart.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.apiServer.replicas }}
+  selector:
+    matchLabels:
+      app: api-server
+    {{- include "apiserverchart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: api-server
+      {{- include "apiserverchart.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: MONGO_IP
+          value: {{ quote .Values.apiServer.apiServer.env.monogIp }}
+        - name: KAFKA_IP
+          value: {{ quote .Values.apiServer.apiServer.env.kafkaIp }}
+        - name: MONGO_USERNAME
+          value: {{ .Values.apiServer.apiServer.env.mongoUsername }}
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+
+        - name: MONGO_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-release
+              key: mongodb-root-password
+
+
+        - name: KAFKA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: my-release-kafka-user-passwords
+              key: client-passwords
+          
+        image: {{ .Values.apiServer.apiServer.image.repository }}:{{ .Values.apiServer.apiServer.image.tag
+          | default .Chart.AppVersion }}
+        name: api-server
+        ports:
+        - containerPort: 5000
+        resources: {}
