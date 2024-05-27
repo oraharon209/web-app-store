@@ -12,6 +12,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: client-web-server-service
+                name: web-store-client-webserverchart-service
                 port:
                   number: 80
