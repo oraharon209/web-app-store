@@ -6,7 +6,7 @@ apiServer:
       mongoUsername: "root"
     image:
       repository: oraharon/web-store-be
-      tag: "14"
+      tag: "15"
   replicas: 1
 kubernetesClusterDomain: cluster.local
 service:
