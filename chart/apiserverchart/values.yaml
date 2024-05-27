@@ -1,7 +1,7 @@
 apiServer:
   apiServer:
     env:
-      kafkaIp: "my-release-kafka.default.svc.cluster.local"
+      kafkaIp: "kafkachart-kafka-helm-b.default.svc.cluster.local"
       monogIp: "mongodb-release.default.svc.cluster.local"
       mongoUsername: "root"
     image:
