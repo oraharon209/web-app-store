@@ -1,7 +1,7 @@
 clientWebServer:
   clientWebServer:
     env:
-      apiServerIp: "apiserverchart-service.default.svc.cluster.local"
+      apiServerIp: "web-store-api-server-apiserverchart-service.default.svc.cluster.local"
       kafkaIp: "kafkachart-kafka-helm-b.default.svc.cluster.local"
     image:
       repository: oraharon/web-store-fe
